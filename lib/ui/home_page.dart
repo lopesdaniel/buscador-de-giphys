@@ -67,13 +67,33 @@ class _HomePageState extends State<HomePage> {
                       );
                     default:
                       if(snapshot.hasError) return Container();
-                      else _createGifTable(context, snapshot);
+                      else return _createGifTable(context, snapshot);
                   }
                 }
             ),
           )
         ],
       ),
+    );
+  }
+
+  Widget _createGifTable(BuildContext context, AsyncSnapshot snapshot){
+    return GridView.builder(
+        padding: EdgeInsets.all(10.0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0),
+        itemCount: 4,
+        itemBuilder: (context, index){
+          return GestureDetector(
+            child: Image.network(snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+            height: 300.0,
+              fit: BoxFit.cover,
+            ),
+
+          );
+        }
     );
   }
 
