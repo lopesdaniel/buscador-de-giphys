@@ -18,9 +18,9 @@ class _HomePageState extends State<HomePage> {
     http.Response response;
 
     if(_search == null){
-      response = await http.get("https://api.giphy.com/v1/gifs/trending?api_key=j6Rwq6pO2ApiI18hGgO4fGnLHikIGt5c&limit=15&rating=G");
+      response = await http.get("https://api.giphy.com/v1/gifs/trending?api_key=j6Rwq6pO2ApiI18hGgO4fGnLHikIGt5c&limit=20&rating=G");
     }else{
-      response = await http.get("https://api.giphy.com/v1/gifs/search?api_key=j6Rwq6pO2ApiI18hGgO4fGnLHikIGt5c&q=$_search&limit=15&offset=$_offset&rating=G&lang=pt");
+      response = await http.get("https://api.giphy.com/v1/gifs/search?api_key=j6Rwq6pO2ApiI18hGgO4fGnLHikIGt5c&q=$_search&limit=19&offset=$_offset&rating=G&lang=pt");
     }
 
     return json.decode(response.body);
@@ -82,6 +82,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  int _getCount(List data){
+    if(_search == null){
+      return data.length;
+    } else {
+      return data.length + 1;
+    }
+  }
+
   Widget _createGifTable(BuildContext context, AsyncSnapshot snapshot){
     return GridView.builder(
         padding: EdgeInsets.all(10.0),
@@ -89,15 +97,34 @@ class _HomePageState extends State<HomePage> {
             crossAxisCount: 2,
             crossAxisSpacing: 10.0,
             mainAxisSpacing: 10.0),
-        itemCount: 4,
+        itemCount: _getCount(snapshot.data["data"]),
         itemBuilder: (context, index){
+          // 19 é o número de Gifs na minha tela
+          if(_search == null || index < 19)
           return GestureDetector(
             child: Image.network(snapshot.data["data"][index]["images"]["fixed_height"]["url"],
             height: 300.0,
               fit: BoxFit.cover,
             ),
-
           );
+          else
+            return Container(
+              child: GestureDetector(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.add_circle_outline, color: Colors.white, size: 70.0),
+                    Text("Carregar mais..",
+                    style: TextStyle(color: Colors.white, fontSize: 22.0),)
+                  ],
+                ),
+                onTap: (){
+                  setState(() {
+                    _offset += 19;
+                  });
+                },
+              ),
+            );
         }
     );
   }
