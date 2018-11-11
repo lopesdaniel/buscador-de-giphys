@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:async';
+
 import 'package:share/share.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import 'package:buscador_gifs/ui/gif_page.dart';
 import 'package:flutter/material.dart';
@@ -104,9 +106,11 @@ class _HomePageState extends State<HomePage> {
           // 19 é o número de Gifs na minha tela
           if(_search == null || index < 19)
           return GestureDetector(
-            child: Image.network(snapshot.data["data"][index]["images"]["fixed_height"]["url"],
-            height: 300.0,
-              fit: BoxFit.cover,
+            child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image: snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+                height: 300.0,
+                fit: BoxFit.cover,
             ),
             onTap: (){
               Navigator.push(context,
